@@ -4,13 +4,23 @@ file="$1"
 line=$(head -n 1 "$file")
 
 case "$file" in
-    *.py)      [[ "$line" =~ ^[[:space:]]*# ]] ;;
-    *.c|*.js)  [[ "$line" =~ ^[[:space:]]*(//|/\*) ]] ;;
-    *)         echo "Неподдерживаемый файл"; exit 1 ;;
-esac
+    *.py)
+        if [[ "$line" == *"#"* ]]; then
+            echo "Комментарий есть"
+        else
+            echo "Комментария нет"
+        fi
+        ;;
 
-if [[ $? -eq 0 ]]; then
-    echo "Комментарий есть"
-else
-    echo "Комментария нет"
-fi
+    *.c|*.js)
+        if [[ "$line" == *"//"* || "$line" == *"/*"* ]]; then
+            echo "Комментарий есть"
+        else
+            echo "Комментария нет"
+        fi
+        ;;
+
+    *)
+        echo "Неподдерживаемое расширение файла"
+        ;;
+esac
