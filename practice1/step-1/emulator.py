@@ -27,11 +27,68 @@ class Shell:
                     raise ValueError('exit: аргументы не поддерживаются')
                 self.closed = True
                 return 'До свидания!'
-            if command in ('ls', 'cd'):
-                return f'{command}: {json.dumps(args, ensure_ascii=False)}'
+            if command in ('ls', 'cd', 'head', 'tree'):
+                return self.dispatch(command, args)
             raise ValueError(f'{command}: команда не найдена')
         except ValueError as error:
             return f'Ошибка: {error}'
+
+    def dispatch(self, command, args):
+        show_hidden = False
+        count = 10
+        if command in ('ls', 'tree') and args and args[0] == '-a':
+            show_hidden = True
+            args = args[1:]
+        if command == 'head' and args and args[0] == '-n':
+            if len(args) < 2:
+                raise ValueError('head: после -n требуется число')
+            try:
+                count = int(args[1])
+            except ValueError:
+                raise ValueError('head: количество строк должно быть целым числом')
+            if count < 0:
+                raise ValueError('head: количество строк не может быть отрицательным')
+            args = args[2:]
+        if args and args[0] == '--':
+            args = args[1:]
+        elif args and args[0].startswith('-'):
+            raise ValueError(f'{command}: неизвестный параметр {args[0]}')
+        if command in ('cd', 'tree') and len(args) > 1:
+            raise ValueError(f'{command}: слишком много аргументов')
+        if command == 'head' and not args:
+            raise ValueError('head: требуется имя файла')
+        if command == 'cd':
+            path, node = self.vfs.resolve(args[0] if args else '/', self.cwd)
+            if not isinstance(node, dict):
+                raise ValueError(f'{path}: не каталог')
+            self.cwd = path
+            return ''
+        results = []
+        for operand in args or ['.']:
+            path, node = self.vfs.resolve(operand, self.cwd)
+            if command == 'head':
+                if isinstance(node, dict):
+                    raise ValueError(f'{operand}: это каталог')
+                try:
+                    result = ''.join(node.decode('utf-8').splitlines(keepends=True)[:count]).rstrip('\n')
+                except UnicodeDecodeError:
+                    raise ValueError(f'{operand}: двоичный файл, ожидается UTF-8')
+            elif command == 'ls':
+                result = '\n'.join(name for name in sorted(node) if show_hidden or not name.startswith('.')) if isinstance(node, dict) else path.rsplit('/', 1)[-1]
+            else:
+                lines = [path]
+                def walk(current, prefix=''):
+                    if not isinstance(current, dict):
+                        return
+                    names = [n for n in sorted(current) if show_hidden or not n.startswith('.')]
+                    for i, name in enumerate(names):
+                        last = i == len(names) - 1
+                        lines.append(prefix + ('└── ' if last else '├── ') + name)
+                        walk(current[name], prefix + ('    ' if last else '│   '))
+                walk(node)
+                result = '\n'.join(lines)
+            results.append((f'==> {operand} <==\n' if len(args) > 1 else '') + result)
+        return '\n'.join(results)
 
 
 def run_gui(shell, startup=()):
