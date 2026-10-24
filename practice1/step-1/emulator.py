@@ -4,6 +4,7 @@ import getpass
 import json
 import shlex
 import socket
+from pathlib import Path
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 
@@ -100,7 +101,27 @@ def run_gui(shell, startup=()):
 
 
 def main():
-    run_gui(Shell())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--vfs', type=Path, default=Path(__file__).parent / 'examples/deep.xml')
+    parser.add_argument('--script', type=Path, help='Стартовый скрипт UTF-8; комментарии #')
+    parser.add_argument('--headless', action='store_true', help='Выполнить скрипт без GUI')
+    options = parser.parse_args()
+    print(f'VFS: {options.vfs.resolve()}\nScript: {options.script}\nHeadless: {options.headless}')
+    try:
+        startup = options.script.read_text(encoding='utf-8').splitlines() if options.script else []
+        shell = Shell()
+    except (OSError, ValueError) as error:
+        parser.exit(2, f'Ошибка запуска: {error}\n')
+    if options.headless:
+        for line in startup:
+            print(f'{shell.cwd}$ {line}')
+            result = shell.execute(line)
+            if result:
+                print(result)
+            if shell.closed:
+                break
+    else:
+        run_gui(shell, startup)
 
 
 if __name__ == '__main__':

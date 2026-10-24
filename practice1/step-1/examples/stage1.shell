@@ -1,0 +1,7 @@
+# Кавычки и ошибки парсера
+ls "my folder" 'другой путь'
+cd /
+unknown
+ls "незакрытая кавычка
+exit extra
+exit
