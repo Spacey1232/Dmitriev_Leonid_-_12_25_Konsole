@@ -1,0 +1,16 @@
+<vfs>
+  <file name="readme.txt">Первая строка
+Вторая строка
+Третья строка
+Четвёртая строка
+</file>
+  <file name="binary.bin" encoding="base64">AP8BAg==</file>
+  <file name=".hidden">Скрытый файл</file>
+  <directory name="home"><directory name="student"><directory name="docs">
+    <file name="my notes.txt">Заметка 1
+Заметка 2
+</file>
+  </directory></directory></directory>
+  <directory name="empty" />
+  <directory name="prune"><directory name="leaf" /></directory>
+</vfs>
