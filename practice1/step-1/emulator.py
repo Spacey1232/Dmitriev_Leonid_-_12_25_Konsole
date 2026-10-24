@@ -5,12 +5,14 @@ import json
 import shlex
 import socket
 from pathlib import Path
+from vfs import VFS
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 
 
 class Shell:
-    def __init__(self):
+    def __init__(self, vfs=None):
+        self.vfs = vfs
         self.cwd = '/'
         self.closed = False
 
@@ -109,7 +111,7 @@ def main():
     print(f'VFS: {options.vfs.resolve()}\nScript: {options.script}\nHeadless: {options.headless}')
     try:
         startup = options.script.read_text(encoding='utf-8').splitlines() if options.script else []
-        shell = Shell()
+        shell = Shell(VFS(options.vfs))
     except (OSError, ValueError) as error:
         parser.exit(2, f'Ошибка запуска: {error}\n')
     if options.headless:
