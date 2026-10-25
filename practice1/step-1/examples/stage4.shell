@@ -1,29 +1,43 @@
-# Основные команды, режимы и ошибки
+# ls: текущий каталог, заданный каталог, файл, пустой каталог, ошибки
 ls
-ls -a
-ls /home /readme.txt
+ls /home
+ls /empty
+ls /readme.txt
+ls /missing
+ls / /home
+# cd: абсолютный путь, относительный, точка, родитель, корень, ошибки
 cd /home/student/docs
 ls
 head -n 1 "my notes.txt"
+cd .
 cd ..
 cd ./docs/../..
 cd
-head /readme.txt
-head -n 0 /readme.txt
-head -n 2 /readme.txt "/home/student/docs/my notes.txt"
-tree
-tree -a /home
-tree /readme.txt
+cd /../../
 cd /missing
 cd /readme.txt
 cd / /home
-ls -z
+# head: по умолчанию, -n, ноль строк, неверные параметры и пути
+head /readme.txt
+head -n 2 /readme.txt
+head -n 0 /readme.txt
 head
-head -n -1 /readme.txt
+head -n
 head -n x /readme.txt
-head /binary.bin
+head -n -1 /readme.txt
+head /missing
 head /home
+head /binary.bin
+head /readme.txt /binary.bin
+# tree: текущий каталог, каталог, файл, пустой каталог, ошибки
+tree
+tree /home
+tree /readme.txt
+tree /empty
+tree /missing
+tree / /home
+# Общие ошибки и выход
 unknown
-ls "unterminated
+ls "незакрытая кавычка
 exit extra
 exit

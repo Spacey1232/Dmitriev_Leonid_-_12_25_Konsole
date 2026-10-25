@@ -1,29 +1,8 @@
-# Основные команды, режимы и ошибки
+# Загрузка VFS; ls/cd на третьем этапе ещё заглушки
 ls
-ls -a
-ls /home /readme.txt
-cd /home/student/docs
-ls
-head -n 1 "my notes.txt"
-cd ..
-cd ./docs/../..
-cd
-head /readme.txt
-head -n 0 /readme.txt
-head -n 2 /readme.txt "/home/student/docs/my notes.txt"
-tree
-tree -a /home
-tree /readme.txt
-cd /missing
-cd /readme.txt
-cd / /home
-ls -z
-head
-head -n -1 /readme.txt
-head -n x /readme.txt
-head /binary.bin
-head /home
+ls "/home/student/docs"
+cd /home
 unknown
-ls "unterminated
+ls "незакрытая кавычка
 exit extra
 exit
