@@ -1,0 +1,20 @@
+# Удаление пустых каталогов только в памяти
+tree /
+rmdir /empty
+ls /
+rmdir /prune/leaf
+rmdir /prune
+tree /
+# Ошибки: непустой каталог, файл, отсутствующий путь, корень, аргументы
+rmdir /home
+rmdir /readme.txt
+rmdir /missing
+rmdir /
+rmdir
+rmdir /home /prune
+# Защита текущего каталога и его предков
+cd /home/student/docs
+rmdir .
+rmdir ..
+cd /
+exit
