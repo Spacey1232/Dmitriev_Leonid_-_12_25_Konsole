@@ -1,0 +1,7 @@
+key,value
+package,B
+repository,graph.json
+test_mode,true
+output,../generated/b.svg
+max_depth,20
+filter,

@@ -1,0 +1,7 @@
+key,value
+package,A
+repository,cycle.json
+test_mode,true
+output,../generated/cycle.svg
+max_depth,20
+filter,
