@@ -26,3 +26,24 @@ def build_graph(repo, root, max_depth, exclude=""):
 
     level([root], 0)
     return graph
+
+
+def load_order(graph):
+    """Топологический порядок: зависимости раньше потребителей."""
+    remaining = {name: len(set(deps)) for name, deps in graph.items()}
+    users = {name: [] for name in graph}
+    for name, deps in graph.items():
+        for child in set(deps):
+            users[child].append(name)
+    ready = sorted(n for n, count in remaining.items() if not count)
+    result = []
+    while ready:
+        name = ready.pop(0)
+        result.append(name)
+        for user in sorted(users[name]):
+            remaining[user] -= 1
+            if not remaining[user]:
+                ready.append(user)
+    if len(result) != len(graph):
+        raise ValueError("Цикл: линейного порядка загрузки не существует")
+    return result
