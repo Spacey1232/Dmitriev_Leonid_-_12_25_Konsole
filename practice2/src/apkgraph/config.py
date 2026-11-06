@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 KEYS = {"package", "repository", "test_mode", "output", "max_depth",
         "filter"}
 MAX_DEPTH = 200
+CSV_COLUMN_COUNT = 2
 
 
 def load_config(filename):
@@ -18,7 +19,7 @@ def load_config(filename):
         raise ValueError("CSV должен начинаться строкой key,value")
     data = {}
     for row in rows:
-        if len(row) != 2 or row[0] in data or row[0] not in KEYS:
+        if len(row) != CSV_COLUMN_COUNT or row[0] in data or row[0] not in KEYS:
             raise ValueError(f"Неверная или повторная строка CSV: {row}")
         data[row[0]] = row[1].strip()
     if data.keys() != KEYS:

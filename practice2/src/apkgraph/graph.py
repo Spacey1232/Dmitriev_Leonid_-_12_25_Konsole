@@ -28,13 +28,21 @@ def build_graph(repo, root, max_depth, exclude=""):
     return graph
 
 
-def load_order(graph):
-    """Топологический порядок: зависимости раньше потребителей."""
-    remaining = {name: len(set(deps)) for name, deps in graph.items()}
-    users = {name: [] for name in graph}
+def reverse_edges(graph):
+    """Сопоставить каждой зависимости список ее потребителей."""
+    users = dict.fromkeys(graph)
+    for name in users:
+        users[name] = []
     for name, deps in graph.items():
         for child in set(deps):
             users[child].append(name)
+    return users
+
+
+def load_order(graph):
+    """Топологический порядок: зависимости раньше потребителей."""
+    remaining = {name: len(set(deps)) for name, deps in graph.items()}
+    users = reverse_edges(graph)
     ready = sorted(n for n, count in remaining.items() if not count)
     result = []
     while ready:

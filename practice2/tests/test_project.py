@@ -1,7 +1,5 @@
 """Проверки алгоритмов, форматов, ошибок и CLI."""
-import csv
 import io
-import json
 import subprocess
 import sys
 import tarfile
@@ -18,10 +16,9 @@ from apkgraph.render import mermaid, svg
 class GraphTests(unittest.TestCase):
     """Глубина, фильтрация, циклы и порядок."""
 
-    def setUp(self):
-        self.repo = Repository({
-            "A": {"D": "B C"}, "B": {"D": "D"},
-            "C": {"D": "D"}, "D": {"D": ""}})
+    repo = Repository({
+        "A": {"D": "B C"}, "B": {"D": "D"},
+        "C": {"D": "D"}, "D": {"D": ""}})
 
     def test_bfs(self):
         graph = build_graph(self.repo, "A", 20)
